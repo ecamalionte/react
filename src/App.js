@@ -4,6 +4,7 @@ import './css/pure-min.css';
 import './css/side-menu.css';
 import $ from 'jquery';
 import InputCustom from './componentes/InputCustom.js';
+import MessageError from './componentes/MessageError.js';
 
 class App extends Component {
 
@@ -101,10 +102,10 @@ class App extends Component {
                     <div className="header">
                       <h1>Cadastro de Autores</h1>
                     </div>
-                    <div className="message">
-                        <p> {this.state.messageError} </p>
-                    </div>
-                    <div className="content" id="content">
+
+                <MessageError type='error' message={this.state.messageError}/>
+
+                <div className="content" id="content">
                       <div className="pure-form pure-form-aligned">
                 <form className="pure-form pure-form-aligned" onSubmit={this.submitForm} method='post'>
                 <InputCustom id='nome' name='nome' label='Nome' type='text' value={this.state.nome} onChange={this.setNome}/>
