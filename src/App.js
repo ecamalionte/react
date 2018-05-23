@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './css/pure-min.css';
 import './css/side-menu.css';
 import $ from 'jquery';
+import InputCustom from './componentes/InputCustom.js';
 
 class App extends Component {
 
@@ -27,7 +28,21 @@ class App extends Component {
         this.setState({senha: event.target.value});
     }
 
+    buildData() {
+        return JSON.stringify({
+            nome: this.state.nome,
+            email: this.state.email,
+            senha: this.state.senha
+        });
+    }
+
+    clearMessageError(){
+        this.setState({messageError: ''});
+    }
+
+
     componentWillMount(){
+        this.clearMessageError();
         $.ajax({
             url: 'http://cdc-react.herokuapp.com/api/autores',
             dataType: 'json',
@@ -37,7 +52,8 @@ class App extends Component {
             }.bind(this),
             error: function(data) {
                 console.log("error" + data);
-            }
+                this.setState({messageError: 'Something went wrong during the list'});
+            }.bind(this)
           }
         );
     }
@@ -50,20 +66,17 @@ class App extends Component {
             contentType: 'application/json',
             dataType: 'json',
             type: 'post',
-            data: JSON.stringify({
-                nome: this.state.nome,
-                email: this.state.email,
-                senha: this.state.senha}),
+            data: this.buildData(),
             success: function(data) {
                 console.log("success" + data);
                 this.setState({ lista: data});
             }.bind(this),
             error: function(data) {
                 console.log("error" + data.toString());
-            }
+                this.setState({messageError: 'Something went wrong during the post'});
+            }.bind(this)
         });
     }
-
 
     render() {
         console.log("rendering...");
@@ -88,21 +101,16 @@ class App extends Component {
                     <div className="header">
                       <h1>Cadastro de Autores</h1>
                     </div>
+                    <div className="message">
+                        <p> {this.state.messageError} </p>
+                    </div>
                     <div className="content" id="content">
                       <div className="pure-form pure-form-aligned">
                 <form className="pure-form pure-form-aligned" onSubmit={this.submitForm} method='post'>
-                          <div className="pure-control-group">
-                            <label htmlFor="nome">Nome</label>
-                <input id="nome" type="text" name="nome" value={this.state.nome} onChange={this.setNome} />
-                          </div>
-                          <div className="pure-control-group">
-                            <label htmlFor="email">Email</label>
-                <input id="email" type="email" name="email" value={this.state.email} onChange={this.setEmail}  />
-                          </div>
-                          <div className="pure-control-group">
-                            <label htmlFor="senha">Senha</label>
-                <input id="senha" type="password" name="senha" value={this.state.senha} onChange={this.setSenha} />
-                          </div>
+                <InputCustom id='nome' name='nome' label='Nome' type='text' value={this.state.nome} onChange={this.setNome}/>
+                <InputCustom id='email' name='email' label='Email' type='email' value={this.state.email} onChange={this.setEmail}/>
+                <InputCustom id='senha' name='senha' label='Senha' type='password' value={this.state.senha} onChange={this.setSenha}/>
+
                           <div className="pure-control-group">
                             <label></label>
                             <button type="submit" className="pure-button pure-button-primary">Gravar</button>
