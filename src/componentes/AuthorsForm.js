@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import InputCustom from './InputCustom.js';
+import PubSub from 'pubsub-js';
 
 export default class AuthorsForm extends Component {
 
@@ -43,10 +44,10 @@ export default class AuthorsForm extends Component {
             type: 'post',
             data: this.buildData(),
             success: function(newList) {
-                this.props.callbackSuccess(newList);
+                PubSub.publish('authors-list-updated', newList);
             }.bind(this),
             error: function(error) {
-                this.props.callbackError(error);
+                PubSub.publish('flash-message-error', 'Validation errors');
             }.bind(this)
         });
     }
@@ -55,7 +56,7 @@ export default class AuthorsForm extends Component {
     render(){
         return(
            <div className="pure-form pure-form-aligned">
-                AuthorsList             <form className="pure-form pure-form-aligned" onSubmit={this.onSubmit} method='post'>
+              <form className="pure-form pure-form-aligned" onSubmit={this.onSubmit} method='post'>
                 <InputCustom id='nome' name='nome' label='Nome' type='text' value={this.state.nome} onChange={this.setNome}/>
                 <InputCustom id='email' name='email' label='Email' type='email' value={this.state.email} onChange={this.setEmail}/>
                 <InputCustom id='senha' name='senha' label='Senha' type='password' value={this.state.senha} onChange={this.setSenha}/>
