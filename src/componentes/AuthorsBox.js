@@ -38,8 +38,8 @@ export default class AuthorsBox extends Component {
     render(){
         return(
                 <div>
-                  <MessageError message={this.state.messageError}/>
-                  <AuthorsForm callbackSuccess={this.updateList} callbackError={this.setMessage}/>
+                  <MessageError/>
+                  <AuthorsForm/>
                   <AuthorsList lista={this.state.lista}/>
                 </div>
         );

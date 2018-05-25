@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import InputCustom from './InputCustom.js';
 import PubSub from 'pubsub-js';
+import ErrorHandler from './ErrorHandler.js';
 
 export default class AuthorsForm extends Component {
 
@@ -35,6 +36,7 @@ export default class AuthorsForm extends Component {
     }
 
     onSubmit(event){
+        PubSub.publish('clean-message-error', '');
         console.log('sending data...');
         event.preventDefault();
         $.ajax({
@@ -47,7 +49,7 @@ export default class AuthorsForm extends Component {
                 PubSub.publish('authors-list-updated', newList);
             }.bind(this),
             error: function(error) {
-                PubSub.publish('flash-message-error', 'Validation errors');
+                new ErrorHandler().handle(error);
             }.bind(this)
         });
     }
