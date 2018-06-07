@@ -9,7 +9,13 @@ export default class AuthorsBox extends Component {
 
     constructor(){
         super();
-        this.state = { lista: [], nome: '', email: '', senha: '' };
+        this.state = { lista: [] };
+
+        PubSub.subscribe('authors-list-updated', (topic, newList) =>{
+            console.log('antes de mudar o estado');
+            this.setState({lista: newList});
+            console.log('mudou o estado');
+        });
     }
 
     clearMessageError(){
@@ -18,24 +24,24 @@ export default class AuthorsBox extends Component {
 
     componentWillMount(){
         this.clearMessageError();
-        $.ajax({
-            url: 'http://cdc-react.herokuapp.com/api/autores',
-            dataType: 'json',
-            success: function(newList) {
-                PubSub.publish('authors-list-updated', newList);
-            }.bind(this),
-            error: function(error) {
-                PubSub.publish('flash-message-error', 'Something went wrong during the list');
-            }.bind(this)
-        });
-
-        PubSub.subscribe('authors-list-updated', function(topic, newList){
-            this.setState({lista: newList});
-        }.bind(this));
+        console.log('fetch na lista');
+        fetch('http://cdc-react.herokuapp.com/api/autores')
+            .then(response => {
+                if(response.ok) {
+                    return response.json();
+                }else {
+                    throw new Error('Erro na Listagem');
+                }
+            })
+            .then(authors => { PubSub.publish('authors-list-updated', authors); })
+            .catch(error => {
+                PubSub.publish('flash-message-error', error.message);
+            });
     }
 
 
     render(){
+        console.log('renderizando o Box');
         return(
                 <div>
                   <MessageError/>

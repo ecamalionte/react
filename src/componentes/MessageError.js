@@ -5,10 +5,12 @@ export default class MessageError extends Component {
 
     constructor() {
         super();
-        this.state = {messageError: '' };
+        this.state = { messageError: '' };
+
         PubSub.subscribe('flash-message-error', function(topic, error){
             this.setState({messageError: error});
         }.bind(this));
+
         PubSub.subscribe('clean-message-error', function(topic, params){
             this.setState({messageError: ''});
         }.bind(this));

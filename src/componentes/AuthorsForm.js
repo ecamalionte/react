@@ -8,7 +8,7 @@ export default class AuthorsForm extends Component {
 
     constructor() {
         super();
-        this.state = { lista: [], nome: '', email: '', senha: '' };
+        this.state = { nome: '', email: '', senha: '' };
         this.onSubmit = this.onSubmit.bind(this);
         this.setNome = this.setNome.bind(this);
         this.setEmail = this.setEmail.bind(this);
@@ -35,6 +35,10 @@ export default class AuthorsForm extends Component {
         });
     }
 
+    cleanForm(){
+        this.setState({nome: '', email: '', senha: ''});
+    }
+
     onSubmit(event){
         PubSub.publish('clean-message-error', '');
         console.log('sending data...');
@@ -52,6 +56,7 @@ export default class AuthorsForm extends Component {
                 new ErrorHandler().handle(error);
             }.bind(this)
         });
+        this.cleanForm();
     }
 
 
